@@ -23,7 +23,7 @@ namespace SalesWebMvc.Controllers
             return View(list);
         }
 
-        public IActionResult Create()   // GET action to the button "Create New" created at Sellers page
+        public IActionResult Create()   // GET action to the button "Create New" created at Sellers page that will call View Create Form
         {
             return View();
         }
