@@ -10,7 +10,7 @@ namespace SalesWebMvc.Services
 {
     public class SellerService
     {
-        private readonly SalesWebMvcContext _context; // Dependência para SalesWebMvcContext
+        private readonly SalesWebMvcContext _context; // Dependência para SalesWebMvcContext (banco de dados)
 
         public SellerService(SalesWebMvcContext context) // Construtor para que a injeção de dependência possa ocorrer
         {
@@ -20,6 +20,12 @@ namespace SalesWebMvc.Services
         public List<Seller> FindAll()
         {
             return _context.Seller.ToList();
+        }
+
+        public void Insert(Seller obj)
+        {
+            _context.Add(obj);
+            _context.SaveChanges();
         }
     }
 }
