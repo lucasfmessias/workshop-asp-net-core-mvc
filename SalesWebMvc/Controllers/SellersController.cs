@@ -27,7 +27,8 @@ namespace SalesWebMvc.Controllers
             return View(list);
         }
 
-        public IActionResult Create()   // GET action to the button "Create New" created at Sellers page that will call View Create Form
+        // GET action to the button "Create New" created at Sellers page that will call View Create Form
+        public IActionResult Create()   
         {
             var departments = _departmentService.FindAll();
             var viewModel = new SellerFormViewModel { Departments = departments };
@@ -40,6 +41,31 @@ namespace SalesWebMvc.Controllers
         {
             _sellerService.Insert(seller);              // Call method to insert a new Seller at database
             return RedirectToAction(nameof(Index));     // After inserted the register return to the Index page
+        }
+
+        // GET action to the link "Delete" created at Sellers page that will call View Delete Form
+        public IActionResult Delete(int? id) // int? id, meaning that enter of ID is optionally
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var obj = _sellerService.FindById(id.Value); // syntax: FindById(id.value) - Because in the beginning of the method the passages of ID was set as optionally.
+            if (obj == null)
+            {
+                return NotFound();
+            }
+
+            return View(obj);
+        }
+
+        [HttpPost]  // Indicates this action like POST
+        [ValidateAntiForgeryToken] // Avoid CSRF attack 
+        public IActionResult Delete(int id)
+        {
+            _sellerService.Remove(id);              // Call method to remove to delete a seller
+            return RedirectToAction(nameof(Index));     // After deleted the register return to the Index page
         }
     }
 }
