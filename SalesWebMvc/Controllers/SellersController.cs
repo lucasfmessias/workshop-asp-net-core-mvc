@@ -67,5 +67,22 @@ namespace SalesWebMvc.Controllers
             _sellerService.Remove(id);              // Call method to remove to delete a seller
             return RedirectToAction(nameof(Index));     // After deleted the register return to the Index page
         }
+
+        // GET action to the link "Details" created at Sellers page that will call View Details Form
+        public IActionResult Details(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var obj = _sellerService.FindById(id.Value); // syntax: FindById(id.value) - Because in the beginning of the method the passages of ID was set as optionally.
+            if (obj == null)
+            {
+                return NotFound();
+            }
+
+            return View(obj);
+        }
     }
 }
