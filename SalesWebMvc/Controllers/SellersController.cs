@@ -24,43 +24,43 @@ namespace SalesWebMvc.Controllers
             _departmentService = departmentService;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var list = _sellerService.FindAll();
+            var list = await _sellerService.FindAllAsync();
             return View(list);
         }
 
         // GET action to the button "Create New" created at Sellers page that will call View Create Form
-        public IActionResult Create()   
+        public async Task<IActionResult> Create()   
         {
-            var departments = _departmentService.FindAll();
+            var departments = await _departmentService.FindAllAsync();
             var viewModel = new SellerFormViewModel { Departments = departments };
             return View(viewModel);
         }
 
         [HttpPost]  // Indicates this action like POST
         [ValidateAntiForgeryToken] // Avoid CSRF attack 
-        public IActionResult Create(Seller seller)
+        public async Task<IActionResult> Create(Seller seller)
         {
             if (!ModelState.IsValid)
             {
-                var departments = _departmentService.FindAll();
+                var departments = await _departmentService.FindAllAsync();
                 var viewModel = new SellerFormViewModel { Seller = seller, Departments = departments };
                 return View(viewModel);
             }
-            _sellerService.Insert(seller);              // Call method to insert a new Seller at database
+            await _sellerService.InsertAsync(seller);              // Call method to insert a new Seller at database
             return RedirectToAction(nameof(Index));     // After inserted the register return to the Index page
         }
 
         // GET action to the link "Delete" created at Sellers page that will call View Delete Form
-        public IActionResult Delete(int? id) // int? id, meaning that enter of ID is optionally
+        public async Task<IActionResult> Delete(int? id) // int? id, meaning that enter of ID is optionally
         {
             if (id == null)
             {
                 return RedirectToAction(nameof(Error), new { message = "Id not provided" });
             }
 
-            var obj = _sellerService.FindById(id.Value); // syntax: FindById(id.value) - Because in the beginning of the method the passages of ID was set as optionally.
+            var obj = await _sellerService.FindByIdAsync(id.Value); // syntax: FindById(id.value) - Because in the beginning of the method the passages of ID was set as optionally.
             if (obj == null)
             {
                 return RedirectToAction(nameof(Error), new { message = "Id not found" });
@@ -71,21 +71,21 @@ namespace SalesWebMvc.Controllers
 
         [HttpPost]  // Indicates this action like POST
         [ValidateAntiForgeryToken] // Avoid CSRF attack 
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            _sellerService.Remove(id);              // Call method to remove to delete a seller
+            await _sellerService.RemoveAsync(id);              // Call method to remove to delete a seller
             return RedirectToAction(nameof(Index));     // After deleted the register return to the Index page
         }
 
         // GET action to the link "Details" created at Sellers page that will call View Details Form
-        public IActionResult Details(int? id)
+        public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
                 return RedirectToAction(nameof(Error), new { message = "Id not provided" });
             }
 
-            var obj = _sellerService.FindById(id.Value); // syntax: FindById(id.value) - Because in the beginning of the method the passages of ID was set as optionally.
+            var obj = await _sellerService.FindByIdAsync(id.Value); // syntax: FindById(id.value) - Because in the beginning of the method the passages of ID was set as optionally.
             if (obj == null)
             {
                 return RedirectToAction(nameof(Error), new { message = "Id not found" });
@@ -95,31 +95,31 @@ namespace SalesWebMvc.Controllers
         }
 
         // GET action to the link "Edit" created at Sellers page that will call View Edit Form
-        public IActionResult Edit(int? id)
+        public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
             {
                 return RedirectToAction(nameof(Error), new { message = "Id not provided" });
             }
 
-            var obj = _sellerService.FindById(id.Value); // syntax: FindById(id.value) - Because in the beginning of the method the passages of ID was set as optionally.
+            var obj = await _sellerService.FindByIdAsync(id.Value); // syntax: FindById(id.value) - Because in the beginning of the method the passages of ID was set as optionally.
             if (obj == null)
             {
                 return RedirectToAction(nameof(Error), new { message = "Id not found" });
             }
 
-            List<Department> departments = _departmentService.FindAll();
+            List<Department> departments = await _departmentService.FindAllAsync();
             SellerFormViewModel viewModel = new SellerFormViewModel { Seller = obj, Departments = departments };
             return View(viewModel);
         }
 
         [HttpPost]  // Indicates this action like POST
         [ValidateAntiForgeryToken] // Avoid CSRF attack 
-        public IActionResult Edit(int id, Seller seller)
+        public async Task<IActionResult> Edit(int id, Seller seller)
         {
             if (!ModelState.IsValid)
             {
-                var departments = _departmentService.FindAll();
+                var departments = await _departmentService.FindAllAsync();
                 var viewModel = new SellerFormViewModel { Seller = seller, Departments = departments };
                 return View(viewModel);
             }
@@ -130,7 +130,7 @@ namespace SalesWebMvc.Controllers
             }
             try
             {
-                _sellerService.Update(seller);              // Call method to update a Seller at database
+                await _sellerService.UpdateAsync(seller);              // Call method to update a Seller at database
                 return RedirectToAction(nameof(Index));     // After deleted the register return to the Index page
             }
             catch (NotFoundException e)
