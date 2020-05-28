@@ -31,7 +31,7 @@ namespace SalesWebMvc.Controllers
         }
 
         // GET action to the button "Create New" created at Sellers page that will call View Create Form
-        public async Task<IActionResult> Create()   
+        public async Task<IActionResult> Create()
         {
             var departments = await _departmentService.FindAllAsync();
             var viewModel = new SellerFormViewModel { Departments = departments };
@@ -73,8 +73,15 @@ namespace SalesWebMvc.Controllers
         [ValidateAntiForgeryToken] // Avoid CSRF attack 
         public async Task<IActionResult> Delete(int id)
         {
-            await _sellerService.RemoveAsync(id);              // Call method to remove to delete a seller
-            return RedirectToAction(nameof(Index));     // After deleted the register return to the Index page
+            try
+            {
+                await _sellerService.RemoveAsync(id);              // Call method to remove to delete a seller
+                return RedirectToAction(nameof(Index));     // After deleted the register return to the Index page
+            }
+            catch (IntegrityException e)
+            {
+                return RedirectToAction(nameof(Error), new { message = e.Message });
+            }
         }
 
         // GET action to the link "Details" created at Sellers page that will call View Details Form
@@ -130,7 +137,7 @@ namespace SalesWebMvc.Controllers
             }
             try
             {
-                await _sellerService.UpdateAsync(seller);              // Call method to update a Seller at database
+                await _sellerService.UpdateAsync(seller);   // Call method to update a Seller at database
                 return RedirectToAction(nameof(Index));     // After deleted the register return to the Index page
             }
             catch (NotFoundException e)
